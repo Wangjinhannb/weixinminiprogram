@@ -1,0 +1,45 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card">
+    <view class="h1">场室管理</view>
+    <view class="row" style="margin-top:12px;">
+      <view class="col"><button class="btn btn-primary" bindtap="onAdd">新增场室</button></view>
+      <view class="col"><button class="btn btn-ghost" bindtap="onInitDefault">初始化默认场室</button></view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{loading}}"><view class="muted">正在加载场室...</view></view>
+  <view class="card" wx:elif="{{loadError}}"><view class="danger">{{loadError}}</view></view>
+  <view class="card" wx:elif="{{!venues.length}}"><view class="muted">{{emptyText}}</view></view>
+
+  <view wx:else>
+    <view wx:for="{{venues}}" wx:key="_id" class="card venue-card">
+      <view class="adm-top">
+        <view>
+          <view class="h2">{{item.name}}</view>
+        </view>
+        <view class="sub">排序 {{item.sort || 0}}</view>
+      </view>
+      <view class="sub">状态：{{item.statusText}}</view>
+      <view class="sub">默认报名上限：{{item.maxPeopleLimitText}}</view>
+      <view class="sub" wx:if="{{item.location}}">位置：{{item.location}}</view>
+      <view class="sub" wx:if="{{item.capacity}}">容量：{{item.capacity}} 人</view>
+      <view class="sub" wx:if="{{item.description}}">说明：{{item.description}}</view>
+      <view class="sub" wx:if="{{item.bookingNotice}}">预约须知：{{item.bookingNotice}}</view>
+      <view class="sub">通用时段</view>
+      <view class="time-wrap" wx:if="{{item.timeSlotText.length}}">
+        <view wx:for="{{item.timeSlotText}}" wx:key="*this" class="pill">{{item}}</view>
+      </view>
+      <view wx:else class="sub">当前未配置通用时段</view>
+      <view class="sub" wx:if="{{item.dateOverrideCount}}">指定日期覆盖：{{item.dateOverrideCount}} 天</view>
+      <view wx:if="{{item.dateOverrideTextList.length}}" class="override-summary-list">
+        <view wx:for="{{item.dateOverrideTextList}}" wx:key="*this" class="sub override-line">{{item}}</view>
+      </view>
+      <view class="row venue-actions" style="margin-top:12px; flex-wrap: wrap;">
+        <view class="action-item"><button class="btn btn-ghost" data-id="{{item._id}}" bindtap="onEdit">编辑</button></view>
+        <view class="action-item"><button class="btn {{item.enabled ? 'btn-ghost' : 'btn-primary'}}" data-venue-id="{{item.venueId}}" data-enabled="{{item.enabled}}" data-visible="{{item.visible}}" bindtap="onToggleEnabled">{{item.enabled ? '停用' : '启用'}}</button></view>
+        <view class="action-item"><button class="btn btn-danger" data-venue-id="{{item.venueId}}" bindtap="onDelete">删除</button></view>
+      </view>
+    </view>
+  </view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

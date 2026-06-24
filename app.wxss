@@ -1,0 +1,69 @@
+
+page{
+  background:#EBD7B5;
+  background-image:
+    radial-gradient(circle at 12% 6%, rgba(167,58,32,.12) 0, rgba(167,58,32,0) 28%),
+    radial-gradient(circle at 88% 2%, rgba(19,20,18,.08) 0, rgba(19,20,18,0) 24%),
+    linear-gradient(180deg,#F2E2C4 0%,#EBD7B5 56%,#E3CAA1 100%);
+  color:#131412;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC","Helvetica Neue",Arial,sans-serif;
+}
+.container{ padding:14px; }
+.card{
+  background:rgba(242,226,196,.94);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:0 12px 30px rgba(65,44,25,.12);
+  border:1px solid rgba(167,58,32,.14);
+  margin-bottom:12px;
+}
+.h1{ font-size:1.25em; font-weight:900; letter-spacing:.2px; color:#131412; }
+.h2{ font-size:1em; font-weight:900; color:#131412; }
+.sub{ margin-top:6px; font-size:0.8125em; color:rgba(65,44,25,.68); line-height:1.6; }
+.label{ font-size:0.8125em; font-weight:800; color:rgba(19,20,18,.78); margin-bottom:8px; }
+.input{
+  padding:12px;
+  border-radius:14px;
+  background:rgba(255,247,230,.78);
+  border:1px solid rgba(167,58,32,.18);
+  color:#131412;
+  font-size:0.875em;
+}
+.divider{ height:1px; background:rgba(167,58,32,.16); margin:12px 0; }
+.row{ display:flex; gap:10px; } .col{ flex:1; }
+.btn{
+  height:44px;
+  border-radius:14px;
+  font-size:0.875em;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.btn::after{ border:0; }
+.btn-primary{
+  background:linear-gradient(135deg,#131412 0%,#2A2A22 52%,#A73A20 100%);
+  color:#F2E2C4;
+  box-shadow:0 10px 22px rgba(19,20,18,.18);
+}
+.btn-ghost{
+  background:rgba(167,58,32,.10);
+  color:#131412;
+  border:1px solid rgba(167,58,32,.20);
+}
+.btn-danger{
+  background:rgba(167,58,32,.16);
+  color:#A73A20;
+  border:1px solid rgba(167,58,32,.22);
+}
+.muted{ color:rgba(65,44,25,.58); }
+.danger{ color:#A73A20; font-weight:900; }
+.pill{
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:0.75em;
+  background:rgba(255,247,230,.72);
+  border:1px solid rgba(167,58,32,.16);
+  color:rgba(19,20,18,.76);
+}
+.toast-hint{ margin-top:10px; font-size:0.75em; color:rgba(65,44,25,.52); }

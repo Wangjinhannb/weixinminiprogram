@@ -1,0 +1,163 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card">
+    <view class="h1">管理</view>
+  </view>
+
+  <view class="card" wx:if="{{!user || !user.canEnterAdmin}}">
+    <view class="h2">权限不足</view>
+    <view class="sub">当前账号暂无管理员权限。</view>
+    <view style="margin-top:12px;">
+      <button class="btn btn-primary" bindtap="goMy">返回「我的」</button>
+    </view>
+  </view>
+
+  <block wx:else>
+    <view class="card admin-nav-card">
+      <view class="row admin-nav-row">
+        <view class="col"><button class="btn btn-primary" bindtap="goVenueManage">场室管理</button></view>
+        <view class="col"><button class="btn btn-ghost" bindtap="goActivityManage">活动管理</button></view>
+        <view class="col" wx:if="{{user && user.canManageAdmins}}"><button class="btn btn-ghost" bindtap="goAdminUsers">管理员权限</button></view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="label">筛选场室</view>
+      <picker mode="selector" range="{{venueNames}}" value="{{venueIndex}}" bindchange="onVenueChange">
+        <view class="input">{{selectedVenueName || '全部场室'}}</view>
+      </picker>
+
+      <view class="divider"></view>
+
+      <view class="row filter-row">
+        <view class="col">
+          <view class="label">日期筛选</view>
+          <button class="btn {{useDateFilter ? 'btn-primary' : 'btn-ghost'}}" bindtap="onToggleDateFilter">{{useDateFilter ? '已启用日期筛选' : '查看全部日期'}}</button>
+        </view>
+      </view>
+
+      <view wx:if="{{useDateFilter}}">
+        <view class="divider"></view>
+        <view class="label">选择日期</view>
+        <picker mode="date" value="{{date}}" start="{{dateStart}}" end="{{dateEnd}}" bindchange="onDateChange">
+          <view class="input">{{date || '点击选择日期'}}</view>
+        </picker>
+      </view>
+    </view>
+
+
+    <view class="card list-module activity-registration-module">
+      <view class="module-head">
+        <view class="h2">活动报名信息</view>
+        <view class="module-actions">
+          <button class="refresh-btn" loading="{{activityRegistrationLoading}}" disabled="{{activityRegistrationLoading}}" bindtap="onRefreshActivityRegistrations">刷新</button>
+          <view class="module-count">{{activityRegistrationList.length}} / 500</view>
+        </view>
+      </view>
+
+      <view wx:if="{{activityRegistrationLoading}}" class="muted" style="margin-top:10px;">正在加载报名信息...</view>
+      <view wx:elif="{{activityRegistrationError}}" class="muted" style="margin-top:10px;">{{activityRegistrationError}}</view>
+      <scroll-view wx:elif="{{activityRegistrationList.length}}" scroll-y class="booking-scroll" style="{{activityRegistrationList.length > 5 ? 'height:760rpx;' : ''}}">
+        <view wx:for="{{activityRegistrationList}}" wx:key="id" class="adm-item adm-item-compact activity-registration-item">
+          <view class="adm-top">
+            <view class="adm-title-line">
+              <text class="adm-no">#{{item.displayNo}}</text>
+              <text class="adm-title">{{item.activityTitle}}</text>
+            </view>
+            <view class="adm-status adm-status-booked">已报名</view>
+          </view>
+          <view class="sub">报名时间：{{item.createdAtText || item.updatedAtText || '未知'}}</view>
+          <view class="sub">姓名：{{item.participantName || '未填写'}} · {{item.phone || '未填写手机号'}} · {{item.peopleCount || 0}}人 · {{item.hasChildText || '不带小孩'}}</view>
+          <view class="sub" wx:if="{{item.userName && item.userName !== item.participantName}}">微信昵称：{{item.userName}}</view>
+        </view>
+      </scroll-view>
+      <view wx:else class="muted" style="margin-top:10px;">暂无活动报名信息</view>
+    </view>
+
+    <view class="card">
+      <view class="h2">预约人数汇总</view>
+
+      <view wx:if="{{loading}}" class="muted" style="margin-top:10px;">正在加载汇总数据...</view>
+      <view wx:elif="{{summaryError}}" class="muted" style="margin-top:10px;">{{summaryError}}</view>
+      <view wx:elif="{{summaryList.length}}">
+        <view wx:for="{{summaryList}}" wx:key="dateTimeLabel" class="summary-item {{item.isFull ? 'summary-item-full' : ''}}">
+          <view class="adm-top">
+            <view class="adm-title">{{item.venueName}}</view>
+            <view class="summary-badge {{item.isFull ? 'summary-badge-full' : (item.occupied ? 'summary-badge-used' : 'summary-badge-empty')}}">{{item.isFull ? '已满' : (item.occupied ? '已预约' : '可预约')}}</view>
+          </view>
+          <view class="sub">时间：{{item.dateTimeLabel || (item.date + ' ' + item.timeLabel)}}</view>
+          <view class="summary-grid">
+            <view class="summary-cell">
+              <view class="summary-label">预约人数</view>
+              <view class="summary-value">{{item.currentPeople}}</view>
+            </view>
+            <view class="summary-cell">
+              <view class="summary-label">最大人数</view>
+              <view class="summary-value">{{item.maxPeopleLimit > 0 ? item.maxPeopleLimit : '不限'}}</view>
+            </view>
+            <view class="summary-cell">
+              <view class="summary-label">剩余名额</view>
+              <view class="summary-value">{{item.maxPeopleLimit > 0 ? item.remainingPeople : '不限'}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="muted" style="margin-top:10px;">当前筛选条件下暂无汇总数据</view>
+    </view>
+
+    <view class="card list-module">
+      <view class="module-head">
+        <view class="h2">已预约</view>
+        <view class="module-actions">
+          <button wx:if="{{bookedList.length}}" class="export-btn" bindtap="onExportBooked">导出Excel</button>
+          <view class="module-count">{{bookedList.length}} / 500</view>
+        </view>
+      </view>
+
+      <view wx:if="{{loading}}" class="muted" style="margin-top:10px;">正在加载...</view>
+      <view wx:elif="{{loadError}}" class="muted" style="margin-top:10px;">{{loadError}}</view>
+      <scroll-view wx:elif="{{bookedList.length}}" scroll-y class="booking-scroll" style="{{bookedList.length > 5 ? 'height:760rpx;' : ''}}">
+        <view wx:for="{{bookedList}}" wx:key="id" class="adm-item adm-item-compact">
+          <view class="adm-top">
+            <view class="adm-title-line">
+              <text class="adm-no">#{{item.displayNo}}</text>
+              <text class="adm-title">{{item.venueName}}</text>
+            </view>
+            <view class="adm-status adm-status-booked">{{item.statusLabel}}</view>
+          </view>
+          <view class="sub">{{item.detailTime}}</view>
+          <view class="sub">{{item.bookingOwner.contactName || item.userProfile.nickName}} · {{item.bookingOwner.phone || '未填写'}} · {{item.peopleCount || item.bookingOwner.people || '未填写'}}人</view>
+          <button class="btn btn-ghost btn-detail" data-id="{{item.id}}" bindtap="onDetail">查看详情</button>
+        </view>
+      </scroll-view>
+      <view wx:else class="muted" style="margin-top:10px;">暂无已预约记录</view>
+    </view>
+
+    <view class="card list-module">
+      <view class="module-head">
+        <view class="h2">已取消</view>
+        <view class="module-count">{{cancelledList.length}} / 100</view>
+      </view>
+
+      <view wx:if="{{loading}}" class="muted" style="margin-top:10px;">正在加载...</view>
+      <view wx:elif="{{loadError}}" class="muted" style="margin-top:10px;">{{loadError}}</view>
+      <scroll-view wx:elif="{{cancelledList.length}}" scroll-y class="booking-scroll" style="{{cancelledList.length > 5 ? 'height:760rpx;' : ''}}">
+        <view wx:for="{{cancelledList}}" wx:key="id" class="adm-item adm-item-compact">
+          <view class="adm-top">
+            <view class="adm-title-line">
+              <text class="adm-no">#{{item.displayNo}}</text>
+              <text class="adm-title">{{item.venueName}}</text>
+            </view>
+            <view class="adm-status adm-status-cancelled">{{item.statusLabel}}</view>
+          </view>
+          <view class="sub">{{item.detailTime}}</view>
+          <view class="sub">{{item.bookingOwner.contactName || item.userProfile.nickName}} · {{item.bookingOwner.phone || '未填写'}} · {{item.peopleCount || item.bookingOwner.people || '未填写'}}人</view>
+          <button class="btn btn-ghost btn-detail" data-id="{{item.id}}" bindtap="onDetail">查看详情</button>
+        </view>
+      </scroll-view>
+      <view wx:else class="muted" style="margin-top:10px;">暂无已取消记录</view>
+    </view>
+  </block>
+
+  <view style="height:90px;"></view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

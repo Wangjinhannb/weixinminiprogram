@@ -1,0 +1,8 @@
+
+.venue-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.pill{ padding:6px 10px; border-radius:999px; font-size:0.75em; background:rgba(255,247,230,.72); border:1px solid rgba(167,58,32,0.16); color: rgba(19,20,18,0.75);}
+.empty-box{padding:12px 0;}
+.venue-summary text{display:inline;}
+.venue-status{ margin-top:12px; padding:10px 12px; border-radius:12px; font-size:0.8125em; line-height:1.6; }
+.venue-status-ok{ background:rgba(208,148,115,.18); color:#6B3B1E; border:1px solid rgba(167,58,32,.18); }
+.venue-status-paused{ background:rgba(167,58,32,.10); color:#8A351F; border:1px solid rgba(167,58,32,.20); }

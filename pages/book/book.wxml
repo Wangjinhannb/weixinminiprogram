@@ -1,0 +1,49 @@
+
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card">
+    <view class="h1">预约</view>
+  </view>
+
+  <view class="card">
+    <view class="label">选择场室</view>
+    <view wx:if="{{loading}}" class="muted">正在同步最新场室状态...</view>
+    <block wx:elif="{{venues.length}}">
+      <picker mode="selector" range="{{venueNames}}" value="{{venueIndex}}" bindchange="onVenueChange">
+        <view class="input">{{currentVenue ? currentVenue.name : "请选择场室"}}</view>
+      </picker>
+
+      <view wx:if="{{currentVenue}}" class="venue-status {{currentVenue.enabled ? 'venue-status-ok' : 'venue-status-paused'}}">
+        {{currentVenue.enabled ? '可预约' : '不可预约'}}
+      </view>
+
+      <view wx:if="{{currentVenue && (currentVenue.location || currentVenue.description || currentVenue.capacity)}}" class="sub venue-summary">
+        <text wx:if="{{currentVenue.location}}">位置：{{currentVenue.location}}</text>
+        <text wx:if="{{currentVenue.capacity}}">{{currentVenue.location ? ' · ' : ''}}容量：{{currentVenue.capacity}}人</text>
+      </view>
+      <view wx:if="{{currentVenue && currentVenue.description}}" class="sub">{{currentVenue.description}}</view>
+      <view wx:if="{{currentVenue && currentVenue.bookingNotice}}" class="sub">预约须知：{{currentVenue.bookingNotice}}</view>
+
+      <view wx:if="{{features.length}}" style="margin-top:10px; display:flex; flex-wrap:wrap; gap:8px;">
+        <view wx:for="{{features}}" wx:key="*this" class="pill">{{item}}</view>
+      </view>
+
+      <view class="divider"></view>
+
+      <view class="label">选择日期</view>
+      <picker mode="date" value="{{date}}" start="{{dateStart}}" end="{{dateEnd}}" bindchange="onDateChange">
+        <view class="input">{{date || "点击选择日期"}}</view>
+      </picker>
+
+      <view class="divider"></view>
+
+      <button class="btn {{currentVenue && currentVenue.enabled === false ? 'btn-ghost' : 'btn-primary'}}" bindtap="goForm">{{currentVenue && currentVenue.enabled === false ? '查看时间段' : '下一步'}}</button>
+    </block>
+
+    <view wx:else class="empty-box">
+      <view class="muted">{{emptyText || '当前暂无可展示场室'}}</view>
+    </view>
+  </view>
+
+  <view style="height:90px;"></view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

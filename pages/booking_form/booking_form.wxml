@@ -1,0 +1,140 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card">
+    <view class="h1">{{isEdit ? "改期" : "填写预约信息"}}</view>
+    <view class="sub">{{venue ? venue.name : ""}} · {{date}}</view>
+    <view wx:if="{{venue && (venue.location || venue.capacity)}}" class="sub">{{venue.location || ''}}{{venue.location && venue.capacity ? ' · ' : ''}}{{venue.capacity ? ('容量 ' + venue.capacity + ' 人') : ''}}</view>
+    <view wx:if="{{venue && venue.maxPeopleLimit}}" class="sub">默认报名人数上限：{{venue.maxPeopleLimit}} 人</view>
+    <view wx:if="{{venue && venue.bookingNotice}}" class="sub">预约须知：{{venue.bookingNotice}}</view>
+    <view wx:if="{{venueUnavailableText}}" class="venue-paused-box">{{venueUnavailableText}}</view>
+    <view wx:if="{{formError}}" class="danger" style="margin-top:8px;">{{formError}}</view>
+  </view>
+
+  <view class="card" wx:if="{{venue || isEdit}}">
+    <view wx:if="{{isEdit && venueNames.length}}">
+      <view class="label">改期场室</view>
+      <picker mode="selector" range="{{venueNames}}" value="{{venueIndex}}" bindchange="onVenueChange">
+        <view class="input">{{venue ? venue.name : '点击选择场室'}}</view>
+      </picker>
+      <view class="divider"></view>
+    </view>
+
+    <view class="label">预约日期</view>
+    <picker mode="date" value="{{date}}" start="{{dateStart}}" end="{{dateEnd}}" bindchange="onDateChange">
+      <view class="input">{{date || "点击选择日期"}}</view>
+    </picker>
+
+    <view class="divider"></view>
+
+    <view class="label">场室开放时间</view>
+    <view wx:if="{{openRangeTextList.length}}" class="occupied-list">
+      <view wx:for="{{openRangeTextList}}" wx:key="*this" class="open-item">{{item}}</view>
+    </view>
+    <view wx:else class="occupied-empty">该场室暂未配置开放时间范围</view>
+
+    <view class="divider"></view>
+
+    <view class="label">选择开始时间</view>
+    <view class="time-picker-box {{!startHourOptions.length ? 'time-picker-box-empty' : ''}}">
+      <view class="time-picker-head">
+        <view class="time-picker-selected">{{startTime || '暂无可用开始时间'}}</view>
+      </view>
+      <block wx:if="{{startHourOptions.length}}">
+        <picker-view class="pv" indicator-style="height: 44px;" value="{{startPickerValue}}" bindchange="onStartPickerChange">
+          <picker-view-column>
+            <view wx:for="{{startHourOptions}}" wx:key="value" class="pv-item">{{item.label}}</view>
+          </picker-view-column>
+          <picker-view-column>
+            <view wx:for="{{startMinuteOptions}}" wx:key="value" class="pv-item">{{item.label}}</view>
+          </picker-view-column>
+        </picker-view>
+      </block>
+      <view wx:else class="occupied-empty">当前日期已无可用开始时间</view>
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="label">选择结束时间</view>
+    <view class="time-picker-box {{!endHourOptions.length ? 'time-picker-box-empty' : ''}}">
+      <view class="time-picker-head">
+        <view class="time-picker-selected">{{endTime || '暂无可用结束时间'}}</view>
+      </view>
+      <block wx:if="{{endHourOptions.length}}">
+        <picker-view class="pv" indicator-style="height: 44px;" value="{{endPickerValue}}" bindchange="onEndPickerChange">
+          <picker-view-column>
+            <view wx:for="{{endHourOptions}}" wx:key="value" class="pv-item">{{item.label}}</view>
+          </picker-view-column>
+          <picker-view-column>
+            <view wx:for="{{endMinuteOptions}}" wx:key="value" class="pv-item">{{item.label}}</view>
+          </picker-view-column>
+        </picker-view>
+      </block>
+      <view wx:else class="occupied-empty">请先选择合法的开始时间</view>
+    </view>
+
+    <view class="sub selection-text">已选：{{date}} {{startTime}} - {{endTime}}</view>
+    <view wx:if="{{slotLimitHintText}}" class="limit-box">{{slotLimitHintText}}</view>
+    <view wx:if="{{submitDisabledText && !hasConflict}}" class="hint-box">{{submitDisabledText}}</view>
+    <view wx:if="{{hasConflict}}" class="conflict-box"><view class="conflict-text">{{conflictText}}</view></view>
+
+    <view class="occupied-wrap">
+      <view class="occupied-title">已占用时间</view>
+      <view wx:if="{{loadingOccupied}}" class="occupied-empty">正在加载占用时段...</view>
+      <view wx:elif="{{occupiedTextList.length}}" class="occupied-list">
+        <view wx:for="{{occupiedTextList}}" wx:key="*this" class="occupied-item">{{item}}</view>
+      </view>
+      <view wx:else class="occupied-empty">当前日期该场室暂无占用时段</view>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{venue}}">
+    <view class="label">联系人信息</view>
+
+    <block wx:if="{{isEdit}}">
+      <view class="readonly-box">
+        <view class="readonly-item">姓名：{{form.name}}</view>
+        <view class="readonly-item">电话：{{form.phone}}</view>
+        <view class="readonly-item">人数：{{form.people}}</view>
+        <view class="readonly-item">身份证：{{form.idCard}}</view>
+        <view class="readonly-item" wx:if="{{form.note}}">备注：{{form.note}}</view>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="label">姓名</view>
+      <input class="input" placeholder="请输入姓名" value="{{name}}" bindinput="onName" />
+      <view class="divider"></view>
+      <view class="label">电话</view>
+      <input class="input" placeholder="请输入电话" value="{{phone}}" bindinput="onPhone" />
+      <view class="divider"></view>
+      <view class="label">人数</view>
+      <input class="input" type="number" placeholder="请输入人数" value="{{people}}" bindinput="onPeople" />
+      <view wx:if="{{slotLimitHintText}}" class="toast-hint">{{slotLimitHintText}}</view>
+      <view class="divider"></view>
+      <view class="label">负责人身份证</view>
+      <input class="input" placeholder="请输入18位身份证号" value="{{idCard}}" bindinput="onIdCard" />
+      <view class="divider"></view>
+      <view class="label">备注</view>
+      <textarea class="textarea" placeholder="可填写用途/其他需求" value="{{note}}" bindinput="onNote"></textarea>
+    </block>
+
+    <view class="divider"></view>
+    <button class="btn {{submitDisabled ? 'btn-ghost' : 'btn-primary'}}" bindtap="onSubmit" disabled="{{submitDisabled}}">{{submitDisabled ? (submitDisabledText || '当前不可提交') : (isEdit ? "确认改期" : "提交预约")}}</button>
+    <view wx:if="{{submitDisabledText}}" class="toast-hint">{{submitDisabledText}}</view>
+  </view>
+
+  <view wx:if="{{noticeVisible}}" class="modal-mask" catchtouchmove="noop" bindtap="noop">
+    <view class="modal" catchtap="noop">
+      <view class="modal-title">使用须知</view>
+      <scroll-view class="modal-body" scroll-y>
+        <view wx:for="{{noticeParas}}" wx:key="index" class="notice-p">{{item}}</view>
+      </scroll-view>
+      <view class="modal-actions">
+        <button class="btn btn-ghost" bindtap="onNoticeClose">返回修改</button>
+        <button class="btn btn-primary" bindtap="onNoticeConfirm">我已知晓</button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<reminder-picker-modal visible="{{reminderModalVisible}}" booking="{{reminderBooking}}" defaultLeadMinutes="{{reminderDefaultLeadMinutes}}" bind:confirm="onReminderConfirm" bind:skip="onReminderSkip" />
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

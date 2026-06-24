@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "reminder-picker-modal": "/components/reminder_picker_modal/reminder_picker_modal"
+  }
+}

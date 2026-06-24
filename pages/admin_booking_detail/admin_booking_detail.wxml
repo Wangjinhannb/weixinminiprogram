@@ -1,0 +1,22 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card" wx:if="{{loading}}"><view class="muted">加载中…</view></view>
+  <view class="card" wx:elif="{{loadError}}"><view class="muted">{{loadError}}</view></view>
+  <view class="card" wx:elif="{{booking}}">
+    <view class="h1">预约详情（管理员）</view>
+    <view class="sub">场室：{{booking.venueName}}</view>
+    <view class="sub">日期：{{booking.date}}</view>
+    <view class="sub">时间段：{{booking.timeLabel}}</view>
+    <view class="sub">状态：{{booking.statusLabel}}</view>
+    <view class="divider"></view>
+    <view class="h2">预约人信息</view>
+    <view class="sub">用户 ID：{{booking.userId}}</view>
+    <view class="sub">姓名：{{booking.form.name || '未填写'}}</view>
+    <view class="sub">电话：{{booking.form.phone || '未填写'}}</view>
+    <view class="sub">人数：{{booking.form.people || '未填写'}}</view>
+    <view class="sub" wx:if="{{booking.form.idCard}}">身份证：{{booking.form.idCard}}</view>
+    <view class="sub" wx:if="{{booking.form.note}}">备注：{{booking.form.note}}</view>
+  </view>
+  <view class="card" wx:else><view class="muted">暂无数据</view></view>
+  <view style="height:90px;"></view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

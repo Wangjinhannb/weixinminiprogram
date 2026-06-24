@@ -1,0 +1,268 @@
+.activity-hero-card{
+  position:relative;
+  overflow:hidden;
+}
+.activity-hero-card::after{
+  content:"";
+  position:absolute;
+  right:-36rpx;
+  top:-46rpx;
+  width:180rpx;
+  height:180rpx;
+  border-radius:999px;
+  background:rgba(167,58,32,.12);
+}
+.hero-kicker{
+  display:inline-flex;
+  padding:5px 10px;
+  border-radius:999px;
+  background:rgba(167,58,32,.12);
+  color:#A73A20;
+  font-size:.78em;
+  font-weight:900;
+  margin-bottom:8px;
+}
+.activity-tabs{
+  margin-bottom:12px;
+  white-space:nowrap;
+}
+.activity-tabs-inner{
+  display:flex;
+  gap:10px;
+  padding:2px 2px 8px;
+}
+.activity-chip{
+  flex:0 0 auto;
+  max-width:420rpx;
+  padding:9px 13px;
+  border-radius:999px;
+  background:rgba(242,226,196,.92);
+  border:1px solid rgba(167,58,32,.15);
+  color:rgba(65,44,25,.82);
+  font-size:.86em;
+  font-weight:800;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.activity-chip-on{
+  background:linear-gradient(135deg,#131412,#A73A20);
+  color:#F2E2C4;
+  box-shadow:0 10px 22px rgba(65,44,25,.16);
+}
+.detail-card,
+.signup-card{
+  overflow:hidden;
+}
+.activity-cover{
+  width:100%;
+  height:360rpx;
+  border-radius:18px;
+  background:rgba(167,58,32,.10);
+  margin-bottom:12px;
+  box-shadow:0 12px 26px rgba(65,44,25,.12);
+}
+.detail-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.detail-title{
+  flex:1;
+  min-width:0;
+}
+.activity-badge{
+  flex:0 0 auto;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#A73A20;
+  color:#F2E2C4;
+  font-size:.75em;
+  font-weight:900;
+}
+.activity-content{
+  margin-top:10px;
+  color:rgba(19,20,18,.84);
+  line-height:1.75;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.signup-open-btn{
+  margin-top:16px;
+}
+.signup-label{
+  margin-top:14px;
+}
+.signup-input{
+  box-sizing:border-box;
+  width:100%;
+}
+.signup-submit{
+  margin-top:16px;
+}
+.success-box{
+  margin-top:12px;
+  padding:12px;
+  border-radius:14px;
+  background:rgba(167,58,32,.10);
+  border:1px solid rgba(167,58,32,.16);
+}
+.success-title{
+  font-weight:900;
+  color:#A73A20;
+}
+.empty-box{
+  text-align:center;
+  padding:30rpx 0;
+}
+.empty-title{
+  font-weight:900;
+  color:#131412;
+}
+
+.signup-mask{
+  position:fixed;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  z-index:9999;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(19,20,18,.42);
+  padding:0 24rpx calc(132rpx + env(safe-area-inset-bottom));
+  box-sizing:border-box;
+}
+.signup-panel{
+  width:100%;
+  max-height:calc(100vh - 260rpx - env(safe-area-inset-bottom));
+  overflow-y:auto;
+  box-sizing:border-box;
+  padding:22px 18px 18px;
+  border-radius:28px 28px 24px 24px;
+  background:linear-gradient(180deg,#FFF6E4 0%,#F7E4BE 100%);
+  border:1px solid rgba(167,58,32,.16);
+  box-shadow:0 -16px 42px rgba(19,20,18,.26);
+}
+.signup-panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+}
+.signup-panel-sub{
+  margin-top:4px;
+}
+.signup-close{
+  flex:0 0 auto;
+  width:34px;
+  height:34px;
+  line-height:32px;
+  text-align:center;
+  border-radius:999px;
+  background:rgba(167,58,32,.10);
+  color:#A73A20;
+  font-size:26px;
+  font-weight:500;
+}
+.signup-activity-title{
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:rgba(255,255,255,.42);
+  color:#131412;
+  font-weight:900;
+  line-height:1.5;
+}
+
+.success-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.success-info{
+  flex:1;
+  min-width:0;
+}
+.cancel-registration-btn{
+  flex:0 0 auto;
+  margin:0;
+  padding:0 12px;
+  height:34px;
+  line-height:32px;
+  border-radius:999px;
+  background:rgba(255,247,230,.86);
+  border:1px solid rgba(167,58,32,.28);
+  color:#A73A20;
+  font-size:.78em;
+  font-weight:900;
+}
+.cancel-registration-btn::after{
+  border:0;
+}
+
+/* 2026-06 报名弹层加大：仅调整弹层视觉尺寸，不改变打开/关闭/提交逻辑 */
+.signup-mask{
+  padding-left:18rpx;
+  padding-right:18rpx;
+  padding-bottom:calc(118rpx + env(safe-area-inset-bottom));
+}
+.signup-panel{
+  padding:28px 22px 24px;
+  border-radius:32px 32px 28px 28px;
+  max-height:calc(100vh - 190rpx - env(safe-area-inset-bottom));
+  min-height:640rpx;
+}
+.signup-panel-head .h2{
+  font-size:1.08em;
+}
+.signup-close{
+  width:40px;
+  height:40px;
+  line-height:38px;
+  font-size:30px;
+}
+.signup-activity-title{
+  margin-top:18px;
+  padding:16px 18px;
+  border-radius:18px;
+  font-size:1em;
+}
+.signup-label{
+  margin-top:18px;
+  font-size:.88em;
+}
+.signup-input{
+  min-height:48px;
+  padding:0 14px;
+  line-height:48px;
+  font-size:.96em;
+  border-radius:18px;
+}
+.signup-picker-wrapper{
+  display:block;
+  width:100%;
+}
+.signup-picker{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-sizing:border-box;
+}
+.signup-picker-placeholder{
+  color:rgba(65,44,25,.42);
+}
+.signup-picker-arrow{
+  flex:0 0 auto;
+  color:rgba(65,44,25,.48);
+  font-size:1.2em;
+}
+.signup-submit{
+  margin-top:24px;
+  height:52px;
+  border-radius:18px;
+  font-size:1em;
+}

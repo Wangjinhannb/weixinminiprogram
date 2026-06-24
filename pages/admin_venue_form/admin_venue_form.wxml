@@ -1,0 +1,201 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card">
+    <view class="h1">{{isEdit ? '编辑场室' : '新增场室'}}</view>
+    <view wx:if="{{errorText}}" class="danger" style="margin-top:8px;">{{errorText}}</view>
+    <view wx:if="{{saveDisabledText}}" class="hint-box" style="margin-top:8px;">{{saveDisabledText}}</view>
+  </view>
+
+  <view class="card" wx:if="{{loading}}"><view class="muted">正在加载数据...</view></view>
+
+  <view wx:else>
+    <view class="card">
+      <view class="label">场室名称</view>
+      <input class="input" placeholder="请输入场室名称" value="{{form.name}}" bindinput="onNameInput" />
+
+      <view class="divider"></view>
+      <view class="label">说明</view>
+      <textarea class="textarea" placeholder="请输入场室说明" value="{{form.description}}" bindinput="onDescriptionInput"></textarea>
+
+      <view class="divider"></view>
+      <view class="label">位置</view>
+      <input class="input" placeholder="例如 3楼301" value="{{form.location}}" bindinput="onLocationInput" />
+
+      <view class="divider"></view>
+      <view class="label">容量</view>
+      <input class="input" type="number" placeholder="例如 20" value="{{form.capacity}}" bindinput="onCapacityInput" />
+
+      <view class="divider"></view>
+      <view class="label">默认报名人数上限</view>
+      <input class="input" type="number" placeholder="留空或填 0 表示不限" value="{{form.maxPeopleLimit}}" bindinput="onMaxPeopleLimitInput" />
+
+      <view class="divider"></view>
+      <view class="label">排序</view>
+      <input class="input" type="number" placeholder="数值越小越靠前" value="{{form.sort}}" bindinput="onSortInput" />
+
+      <view class="divider"></view>
+      <view class="label">预约须知</view>
+      <textarea class="textarea" placeholder="例如 请提前10分钟到场" value="{{form.bookingNotice}}" bindinput="onNoticeInput"></textarea>
+
+      <view class="divider"></view>
+      <view class="label">特性标签</view>
+      <textarea class="textarea" placeholder="请输入特性标签" value="{{form.featuresText}}" bindinput="onFeaturesInput"></textarea>
+
+      <view class="divider"></view>
+      <view class="switch-line"><text>展示给普通用户</text><switch checked="{{form.visible}}" bindchange="onVisibleChange" /></view>
+      <view class="switch-line"><text>允许预约</text><switch checked="{{form.enabled}}" bindchange="onEnabledChange" /></view>
+
+      <view class="divider"></view>
+      <view class="venue-image-head">
+        <view>
+          <view class="label">场室图片</view>
+        </view>
+        <button class="btn btn-ghost mini-btn" loading="{{uploadingImages}}" disabled="{{uploadingImages}}" bindtap="chooseVenueImages">新增图片</button>
+      </view>
+
+      <view wx:if="{{form.imageUrls && form.imageUrls.length}}" class="venue-image-grid">
+        <view wx:for="{{form.imageUrls}}" wx:key="*this" class="venue-image-item">
+          <image class="venue-image-thumb" src="{{item}}" mode="aspectFill" data-url="{{item}}" bindtap="onPreviewVenueImage"></image>
+          <button class="venue-image-delete" data-index="{{index}}" bindtap="onDeleteVenueImage">删除</button>
+        </view>
+      </view>
+    </view>
+
+    <view class="card">
+      <view class="adm-top">
+        <view>
+          <view class="h2">通用可预约时间段</view>
+        </view>
+        <button class="btn btn-ghost mini-btn" bindtap="onAddSlot">新增通用时段</button>
+      </view>
+
+      <view wx:if="{{form.timeSlots.length}}">
+        <view wx:for="{{form.timeSlots}}" wx:key="index" class="slot-row-card">
+          <view class="slot-main">
+            <view class="slot-time">{{item.label}}</view>
+            
+            <view class="slot-limit-row">
+              <text class="sub">该时段报名上限</text>
+              <input class="slot-limit-input" type="number" placeholder="0 或留空为不限" value="{{item.maxPeopleLimit || ''}}" data-index="{{index}}" bindinput="onSlotLimitInput" />
+            </view>
+          </view>
+          <view class="slot-actions">
+            <button class="btn btn-ghost mini-btn" data-index="{{index}}" bindtap="onEditSlot">编辑</button>
+            <button class="btn btn-danger mini-btn" data-index="{{index}}" bindtap="onRemoveSlot">删除</button>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="occupied-empty">暂无通用时间段</view>
+    </view>
+
+    <view class="card">
+      <view class="adm-top">
+        <view>
+          <view class="h2">指定日期覆盖</view>
+        </view>
+        <button class="btn btn-ghost mini-btn" bindtap="onAddOverride">新增日期覆盖</button>
+      </view>
+
+      <view wx:if="{{form.dateOverrides.length}}">
+        <view wx:for="{{form.dateOverrides}}" wx:key="date" class="override-card">
+          <view class="override-top">
+            <view class="override-date-block">
+              <view class="label">覆盖日期</view>
+              <picker mode="date" value="{{item.date}}" start="{{dateStart}}" end="{{dateEnd}}" data-index="{{index}}" bindchange="onOverrideDateChange">
+                <view class="input override-date-input">{{item.date || '点击选择日期'}}</view>
+              </picker>
+            </view>
+            <button class="btn btn-danger mini-btn" data-index="{{index}}" bindtap="onDeleteOverride">删除该日期覆盖</button>
+          </view>
+
+          <view wx:if="{{item.timeSlots.length}}">
+            <view wx:for="{{item.timeSlots}}" wx:key="slotIndex" wx:for-item="slot" wx:for-index="slotIndex" class="slot-row-card slot-row-card-inner">
+              <view class="slot-main">
+                <view class="slot-time">{{slot.dateTimeLabel || (item.date + ' ' + slot.label)}}</view>
+                <view class="sub">开始：{{slot.startDateTime || (item.date + ' ' + slot.start)}} · 结束：{{slot.endDateTime || (item.date + ' ' + slot.end)}}</view>
+                <view class="slot-limit-row">
+                  <text class="sub">该时段报名上限</text>
+                  <input class="slot-limit-input" type="number" placeholder="0 或留空为不限" value="{{slot.maxPeopleLimit || ''}}" data-override-index="{{index}}" data-slot-index="{{slotIndex}}" bindinput="onOverrideSlotLimitInput" />
+                </view>
+              </view>
+              <view class="slot-actions">
+                <button class="btn btn-ghost mini-btn" data-override-index="{{index}}" data-slot-index="{{slotIndex}}" bindtap="onEditOverrideSlot">编辑</button>
+                <button class="btn btn-danger mini-btn" data-override-index="{{index}}" data-slot-index="{{slotIndex}}" bindtap="onDeleteOverrideSlot">删除</button>
+              </view>
+            </view>
+          </view>
+          <view wx:else class="occupied-empty">暂无时间段</view>
+
+          <view style="margin-top:10px;">
+            <button class="btn btn-ghost mini-btn" data-index="{{index}}" bindtap="onAddOverrideSlot">新增该日期时段</button>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="occupied-empty">暂无日期覆盖</view>
+    </view>
+
+    <view class="card">
+      <button class="btn {{saveDisabled ? 'btn-ghost' : 'btn-primary'}}" loading="{{saving}}" disabled="{{saveDisabled}}" bindtap="onSave">{{isEdit ? '保存场室' : '新增场室'}}</button>
+      <view wx:if="{{saveDisabledText}}" class="toast-hint">{{saveDisabledText}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{timeModalVisible}}" class="modal-mask" catchtouchmove="noop" bindtap="noop">
+    <view class="modal time-modal" catchtap="noop" catchtouchmove="noop">
+      <view class="time-modal-head">
+        <view>
+          <view class="modal-title">{{timeModalTitle}}</view>
+        </view>
+        <view class="time-modal-close" bindtap="closeTimeModal">关闭</view>
+      </view>
+
+      <scroll-view scroll-y="true" class="time-modal-body" enhanced="{{true}}" show-scrollbar="{{false}}" enable-flex="{{true}}" catchtouchmove="noop">
+        <view class="time-modal-section">
+          <view class="label">开始时间</view>
+          <view class="time-selected">{{timeModalStartTime}}</view>
+          <picker-view class="pv pv-3col" indicator-style="height: 44px;" value="{{timeModalStartPickerValue}}" bindchange="onTimeModalStartChange">
+            <picker-view-column>
+              <view wx:for="{{timePickerHourOptions}}" wx:key="value" class="pv-item">{{item.label}} 时</view>
+            </picker-view-column>
+            <picker-view-column>
+              <view wx:for="{{timePickerMinuteOptions}}" wx:key="value" class="pv-item">{{item.label}} 分</view>
+            </picker-view-column>
+            <picker-view-column>
+              <view wx:for="{{timePickerSecondOptions}}" wx:key="value" class="pv-item">{{item.label}} 秒</view>
+            </picker-view-column>
+          </picker-view>
+        </view>
+
+        <view class="time-modal-section">
+          <view class="label">结束时间</view>
+          <view class="time-selected">{{timeModalEndTime}}</view>
+          <picker-view class="pv pv-3col" indicator-style="height: 44px;" value="{{timeModalEndPickerValue}}" bindchange="onTimeModalEndChange">
+            <picker-view-column>
+              <view wx:for="{{timePickerHourOptions}}" wx:key="value" class="pv-item">{{item.label}} 时</view>
+            </picker-view-column>
+            <picker-view-column>
+              <view wx:for="{{timePickerMinuteOptions}}" wx:key="value" class="pv-item">{{item.label}} 分</view>
+            </picker-view-column>
+            <picker-view-column>
+              <view wx:for="{{timePickerSecondOptions}}" wx:key="value" class="pv-item">{{item.label}} 秒</view>
+            </picker-view-column>
+          </picker-view>
+        </view>
+
+        <view class="time-modal-section">
+          <view class="label">该时间段报名上限</view>
+          <input class="input" type="number" placeholder="留空或填 0 表示不限" value="{{timeModalCurrentLimit || ''}}" bindinput="onTimeModalLimitInput" />
+        </view>
+
+        <view class="selection-text">预览：{{timeModalPreviewText}}</view>
+        <view wx:if="{{timeModalErrorText}}" class="conflict-box"><view class="conflict-text">{{timeModalErrorText}}</view></view>
+        <view class="time-modal-tail-space"></view>
+      </scroll-view>
+
+      <view class="modal-actions modal-actions-sticky">
+        <button class="btn btn-ghost" bindtap="closeTimeModal">取消</button>
+        <button class="btn {{timeModalCanSave ? 'btn-primary' : 'btn-ghost'}}" disabled="{{!timeModalCanSave}}" bindtap="onTimeModalSave">保存时间段</button>
+      </view>
+    </view>
+  </view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

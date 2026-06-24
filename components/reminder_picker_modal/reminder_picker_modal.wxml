@@ -1,0 +1,33 @@
+<view wx:if="{{visible}}" class="modal-mask" catchtap="noop">
+  <view class="modal" catchtap="noop">
+    <view class="modal-title">设置开始前提醒</view>
+    <view class="modal-sub">预约时间：{{booking.date}} {{booking.timeLabel || booking.startTime}}</view>
+    <view class="modal-sub" wx:if="{{booking.venueName}}">场室：{{booking.venueName}}</view>
+
+    <view wx:if="{{tooLate}}" class="tip-box">
+      当前预约时间较近，已无法设置“开始前再次提醒”。您仍可保留预约成功通知。
+    </view>
+
+    <block wx:else>
+      <view class="tip-box">请选择希望在开始前多久再次提醒。</view>
+      <picker-view class="pv" indicator-style="height: 44px;" value="{{pickerValue}}" bindchange="onPickerChange">
+        <picker-view-column>
+          <view wx:for="{{hourOptions}}" wx:key="value" class="pv-item">{{item.label}}</view>
+        </picker-view-column>
+        <picker-view-column>
+          <view wx:for="{{minuteOptions}}" wx:key="value" class="pv-item">{{item.label}}</view>
+        </picker-view-column>
+      </picker-view>
+      <view class="summary-box">
+        <view class="summary-title">提醒设置</view>
+        <view class="summary-text">开始前 {{leadText}} 提醒</view>
+        <view class="summary-text">预计发送时间：{{reminderAtText}}</view>
+      </view>
+    </block>
+
+    <view class="modal-actions">
+      <button class="btn btn-ghost" bindtap="onSkip">暂不设置</button>
+      <button class="btn btn-primary" bindtap="onConfirm">确定</button>
+    </view>
+  </view>
+</view>

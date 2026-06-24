@@ -1,0 +1,112 @@
+
+.tabbar-wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 16px calc(14px + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  background: linear-gradient(to top, rgba(235, 215, 181, 0.96), rgba(235, 215, 181, 0));
+  z-index: 999;
+}
+
+.tabbar-glass {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  height: 58px;
+  border-radius: 22px;
+  background: rgba(242, 226, 196, 0.78);
+  border: 1px solid rgba(167, 58, 32, 0.18);
+  box-shadow: 0 18px 40px rgba(65, 44, 25, 0.18);
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+}
+
+.tabbar {
+  position: relative;
+  height: 58px;
+  border-radius: 22px;
+  display: flex;
+  overflow: hidden;
+  background: rgba(255, 247, 230, 0.24);
+  border: 1px solid rgba(167, 58, 32, 0.12);
+}
+
+.tabitem {
+  position: relative;
+  flex: 1;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.tabitem-pressing {
+  transform: scale(0.97);
+}
+
+.tabitem-inner {
+  position: relative;
+  z-index: 2;
+  min-width: 70%;
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.active-pill {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: transparent;
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.22s ease;
+}
+
+.active-pill-on {
+  opacity: 1;
+  transform: scale(1);
+  background: linear-gradient(180deg, rgba(255, 247, 230, 0.95), rgba(208, 148, 115, 0.26));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 247, 230, 0.96),
+    0 8px 20px rgba(167, 58, 32, 0.13);
+}
+
+.dot {
+  position: relative;
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(101, 93, 78, 0.58);
+  transition: all 0.22s ease;
+}
+
+.dot-on {
+  width: 10px;
+  height: 10px;
+  background: #A73A20;
+  box-shadow: 0 0 0 6px rgba(167, 58, 32, 0.12);
+}
+
+.txt {
+  position: relative;
+  z-index: 1;
+  font-size: 0.8125em;
+  font-weight: 700;
+  color: rgba(101, 93, 78, 0.96);
+  transition: all 0.22s ease;
+}
+
+.txt-on {
+  color: #131412;
+  font-weight: 800;
+}

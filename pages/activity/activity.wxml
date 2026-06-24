@@ -1,0 +1,75 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card" wx:if="{{loading}}"><view class="muted">正在加载活动...</view></view>
+  <view class="card" wx:elif="{{loadError && !activities.length}}">
+    <view class="empty-box">
+      <view class="empty-title">{{loadError}}</view>
+    </view>
+  </view>
+
+  <block wx:else>
+    <scroll-view wx:if="{{activities.length > 1}}" class="activity-tabs" scroll-x="true" show-scrollbar="false">
+      <view class="activity-tabs-inner">
+        <view wx:for="{{activities}}" wx:key="id" class="activity-chip {{activeIndex === index ? 'activity-chip-on' : ''}}" data-index="{{index}}" bindtap="onActivityTap">
+          {{item.title || '活动预告'}}
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="card detail-card" wx:if="{{selectedActivity}}">
+      <image wx:if="{{selectedActivity.displayImageUrl}}" class="activity-cover" src="{{selectedActivity.displayImageUrl}}" mode="aspectFill" data-url="{{selectedActivity.displayImageUrl}}" bindtap="onPreviewImage"></image>
+      <view class="detail-head">
+        <view class="h1 detail-title">{{selectedActivity.title || '活动预告'}}</view>
+        <view class="activity-badge">可报名</view>
+      </view>
+      <view wx:if="{{selectedActivity.content}}" class="activity-content">{{selectedActivity.content}}</view>
+      <view wx:else class="muted activity-content">管理员暂未填写详细说明。</view>
+
+      <button class="btn btn-primary signup-open-btn" bindtap="openSignupModal">立即报名</button>
+
+      <view wx:if="{{latestRegistration}}" class="success-box">
+        <view class="success-row">
+          <view class="success-info">
+            <view class="success-title">已提交报名</view>
+            <view class="sub">{{latestRegistration.activityTitle}} · {{latestRegistration.participantName || '未填写姓名'}} · {{latestRegistration.peopleCount}}人 · {{latestRegistration.hasChildText || '不带小孩'}} · {{latestRegistration.phone}}</view>
+          </view>
+          <button class="cancel-registration-btn" loading="{{cancelling}}" disabled="{{cancelling}}" bindtap="cancelRegistration">取消报名</button>
+        </view>
+      </view>
+    </view>
+
+    <view class="signup-mask" wx:if="{{signupVisible}}" bindtap="closeSignupModal">
+      <view class="signup-panel" catchtap="noop">
+        <view class="signup-panel-head">
+          <view>
+            <view class="h2">活动报名</view>
+          </view>
+          <view class="signup-close" bindtap="closeSignupModal">×</view>
+        </view>
+
+        <view class="signup-activity-title">{{selectedActivity.title || '活动预告'}}</view>
+
+        <view class="label signup-label">姓名</view>
+        <input class="input signup-input" type="text" maxlength="30" placeholder="请输入姓名" value="{{form.name}}" data-field="name" bindinput="onInput" />
+
+        <view class="label signup-label">手机号</view>
+        <input class="input signup-input" type="number" maxlength="11" placeholder="请输入手机号" value="{{form.phone}}" data-field="phone" bindinput="onInput" />
+
+        <view class="label signup-label">报名人数</view>
+        <input class="input signup-input" type="number" placeholder="请输入人数" value="{{form.people}}" data-field="people" bindinput="onInput" />
+
+        <view class="label signup-label">是否带小孩</view>
+        <picker class="signup-picker-wrapper" mode="selector" range="{{childOptions}}" bindchange="onChildChange">
+          <view class="input signup-input signup-picker {{form.hasChildText ? '' : 'signup-picker-placeholder'}}">
+            <text>{{form.hasChildText || '请选择是否带小孩'}}</text>
+            <text class="signup-picker-arrow">›</text>
+          </view>
+        </picker>
+
+        <button class="btn btn-primary signup-submit" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submitRegistration">提交报名</button>
+      </view>
+    </view>
+  </block>
+
+  <view style="height:90px;"></view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

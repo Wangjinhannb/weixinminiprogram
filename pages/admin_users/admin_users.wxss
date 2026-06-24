@@ -1,0 +1,37 @@
+
+.user-item{
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(255,247,230,.58);
+  border: 1px solid rgba(167,58,32,.14);
+}
+.user-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.user-name{
+  font-weight:900;
+  color:#131412;
+}
+.role-pill{
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:0.75em;
+  font-weight:800;
+  border:1px solid rgba(167,58,32,.16);
+}
+.role-super{
+  background:#131412;
+  color:#F2E2C4;
+}
+.role-admin{
+  background:rgba(167,58,32,.14);
+  color:#A73A20;
+}
+.role-user{
+  background:rgba(255,247,230,.72);
+  color:rgba(19,20,18,.75);
+}

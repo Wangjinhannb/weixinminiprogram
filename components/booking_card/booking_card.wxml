@@ -1,0 +1,14 @@
+<view class="bc card">
+  <view class="top">
+    <view class="title">{{item.venueName}}</view>
+    <view class="status {{item.status==='cancelled'?'st-cancel':''}}">{{item.status==='cancelled'?'已取消':'已确认'}}</view>
+  </view>
+  <view class="sub">{{item.date}} · {{item.timeLabel || (item.startTime + ' - ' + item.endTime)}}</view>
+  <view class="sub">{{item.form.name}} · {{item.form.phone}} · {{item.form.people}}人</view>
+  <view class="divider"></view>
+  <view class="row">
+    <view class="col"><button class="btn btn-ghost" bindtap="emitDetail" data-id="{{item.id}}">详情</button></view>
+    <view class="col" wx:if="{{item.status!=='cancelled'}}"><button class="btn btn-ghost" bindtap="emitEdit" data-id="{{item.id}}">改期</button></view>
+    <view class="col" wx:if="{{item.status!=='cancelled'}}"><button class="btn btn-ghost" bindtap="emitCancel" data-id="{{item.id}}"><text class="danger">取消</text></button></view>
+  </view>
+</view>

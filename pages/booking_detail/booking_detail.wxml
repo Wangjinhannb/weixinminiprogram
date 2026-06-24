@@ -1,0 +1,43 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card" wx:if="{{loading}}"><view class="muted">正在加载预约详情...</view></view>
+
+  <view class="card" wx:elif="{{loadError}}">
+    <view class="h2">加载失败</view>
+    <view class="sub">{{loadError}}</view>
+    <view style="margin-top:12px;"><button class="btn btn-primary" bindtap="onRetry">重新加载</button></view>
+  </view>
+
+  <view class="card" wx:elif="{{empty}}">
+    <view class="h2">暂无预约数据</view>
+    <view class="sub">该预约可能已被删除，或您没有访问权限。</view>
+  </view>
+
+  <view class="card" wx:elif="{{booking}}">
+    <view class="h1">预约详情</view>
+    <view class="sub">场室：{{booking.venueName}}</view>
+    <view class="sub">日期：{{booking.date}}</view>
+    <view class="sub">时间段：{{booking.timeLabel}}</view>
+    <view class="sub">状态：{{booking.statusLabel}}</view>
+    <view class="sub" wx:if="{{subscribed && subscriptionDetail && subscriptionDetail.reminderEnabled && subscriptionDetail.reminderLeadMinutes}}">提醒：开始前 {{subscriptionDetail.reminderLeadText || (subscriptionDetail.reminderLeadMinutes + ' 分钟')}} 再次提醒</view>
+
+    <view class="divider"></view>
+    <view class="h2">预约人信息</view>
+    <view class="sub">姓名：{{booking.form.name || '未填写'}}</view>
+    <view class="sub">电话：{{booking.form.phone || '未填写'}}</view>
+    <view class="sub">人数：{{booking.form.people || '未填写'}}</view>
+    <view class="sub" wx:if="{{booking.form.idCard}}">身份证：{{booking.form.idCard}}</view>
+    <view class="sub" wx:if="{{booking.form.note}}">备注：{{booking.form.note}}</view>
+
+    <view class="divider"></view>
+    <view class="row detail-actions">
+      <view class="col" wx:if="{{booking.canSubscribe}}"><button class="btn btn-ghost" bindtap="onToggleSubscribe">{{subscribed ? '取消订阅' : '订阅通知'}}</button></view>
+      <view class="col" wx:if="{{booking.canEdit}}"><button class="btn btn-ghost" bindtap="onEdit">改期</button></view>
+      <view class="col" wx:if="{{booking.canCancel}}"><button class="btn btn-danger" bindtap="onCancel">取消预约</button></view>
+    </view>
+  </view>
+
+  <view style="height:90px;"></view>
+</view>
+
+<reminder-picker-modal visible="{{reminderModalVisible}}" booking="{{reminderBooking}}" defaultLeadMinutes="{{reminderDefaultLeadMinutes}}" bind:confirm="onReminderConfirm" bind:skip="onReminderSkip" />
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

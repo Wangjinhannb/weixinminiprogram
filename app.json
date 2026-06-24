@@ -1,0 +1,61 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/activity/activity",
+    "pages/book/book",
+    "pages/schedule/schedule",
+    "pages/my/my",
+    "pages/login/login",
+    "pages/admin/admin",
+    "pages/admin_activities/admin_activities",
+    "pages/admin_activity_form/admin_activity_form",
+    "pages/admin_venues/admin_venues",
+    "pages/admin_users/admin_users",
+    "pages/admin_venue_form/admin_venue_form",
+    "pages/booking_form/booking_form",
+    "pages/booking_detail/booking_detail",
+    "pages/admin_booking_detail/admin_booking_detail",
+    "pages/settings/settings",
+    "cloudfunctions/cancelBooking/_shared"
+  ],
+  "window": {
+    "navigationBarTitleText": "场地预约",
+    "navigationBarBackgroundColor": "#EBD7B5",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#EBD7B5",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#655D4E",
+    "selectedColor": "#A73A20",
+    "backgroundColor": "#F2E2C4",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/activity/activity",
+        "text": "活动"
+      },
+      {
+        "pagePath": "pages/book/book",
+        "text": "预约"
+      },
+      {
+        "pagePath": "pages/schedule/schedule",
+        "text": "时间表"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "usingComponents": {
+    "activity-notice-modal": "/components/activity_notice_modal/activity_notice_modal"
+  }
+}

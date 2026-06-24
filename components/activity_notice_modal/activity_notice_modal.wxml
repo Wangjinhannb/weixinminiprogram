@@ -1,0 +1,29 @@
+<view wx:if="{{visible}}" class="notice-mask" catchtouchmove="noop">
+  <view class="notice-panel" catchtap="noop">
+    <view class="notice-glow"></view>
+    <view class="notice-head">
+      <view class="notice-kicker">活动预告</view>
+      <view class="notice-close" bindtap="onClose">×</view>
+    </view>
+
+    <view wx:if="{{loading}}" class="notice-loading">正在加载活动预告...</view>
+
+    <block wx:else>
+      <scroll-view wx:if="{{displayNotices && displayNotices.length}}" class="notice-list" scroll-y="true" show-scrollbar="{{displayNotices.length > 3}}" enhanced="true">
+        <view wx:for="{{displayNotices}}" wx:key="id" class="notice-item">
+          <image wx:if="{{item.displayImageUrl}}" class="notice-item-cover" src="{{item.displayImageUrl}}" mode="aspectFill" data-url="{{item.displayImageUrl}}" bindtap="onPreviewImage"></image>
+          <view class="notice-item-body">
+            <view class="notice-title">{{item.title || '活动预告'}}</view>
+            <view wx:if="{{item.content}}" class="notice-content">{{item.content}}</view>
+            <button class="notice-link-btn" data-index="{{index}}" bindtap="onOpenLink">立即报名</button>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view wx:else class="notice-empty">
+        <view class="notice-empty-icon">⌁</view>
+        <view class="notice-empty-text">暂无活动</view>
+      </view>
+    </block>
+  </view>
+</view>

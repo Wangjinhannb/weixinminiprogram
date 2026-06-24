@@ -1,0 +1,21 @@
+<view wx:if="{{!hidden}}" class="tabbar-wrap" style="font-size: {{uiFontSizePx}}px;">
+  <view class="tabbar-glass"></view>
+  <view class="tabbar">
+    <view
+      wx:for="{{list}}"
+      wx:key="pagePath"
+      class="tabitem {{selected===index?'tabitem-on':''}} {{pressingIndex===index?'tabitem-pressing':''}}"
+      data-index="{{index}}"
+      bindtap="switchTab"
+      bindtouchstart="onTouchStart"
+      bindtouchend="onTouchEnd"
+      bindtouchcancel="onTouchEnd"
+    >
+      <view class="tabitem-inner">
+        <view class="active-pill {{selected===index?'active-pill-on':''}}"></view>
+        <view class="dot {{selected===index?'dot-on':''}}"></view>
+        <view class="txt {{selected===index?'txt-on':''}}">{{item.text}}</view>
+      </view>
+    </view>
+  </view>
+</view>

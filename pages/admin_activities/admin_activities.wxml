@@ -1,0 +1,44 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card">
+    <view class="h1">活动管理</view>
+    <view style="margin-top:12px;">
+      <button class="btn btn-primary" bindtap="onAdd">新增活动</button>
+    </view>
+  </view>
+
+  <view class="card" wx:if="{{loading}}"><view class="muted">正在加载活动...</view></view>
+  <view class="card" wx:elif="{{loadError}}"><view class="danger">{{loadError}}</view></view>
+  <view class="card" wx:elif="{{!activities.length}}">
+    <view class="empty-box">
+      <view class="empty-title">暂无活动</view>
+    </view>
+  </view>
+
+  <view wx:else>
+    <view class="card list-title-card">
+      <view class="module-head">
+        <view class="h2">已发布的活动</view>
+        <view class="module-count">{{activities.length}}</view>
+      </view>
+    </view>
+    <view wx:for="{{activities}}" wx:key="id" class="card activity-card">
+      <image wx:if="{{item.displayImageUrl}}" class="activity-cover" src="{{item.displayImageUrl}}" mode="aspectFill" bindtap="onPreview" data-url="{{item.displayImageUrl}}"></image>
+      <view class="adm-top">
+        <view class="activity-title-wrap">
+          <view class="h2">{{item.title || '未命名活动'}}</view>
+          <view class="sub" wx:if="{{item.updatedAtText}}">最近更新：{{item.updatedAtText}}</view>
+        </view>
+        <view class="activity-badge">已发布</view>
+      </view>
+      <view class="sub activity-content" wx:if="{{item.content}}">{{item.content}}</view>
+      <view class="sub activity-link" wx:if="{{item.linkUrl}}">链接：{{item.linkUrl}}</view>
+      <view class="row activity-actions">
+        <view class="action-item"><button class="btn btn-ghost" data-id="{{item.id}}" bindtap="onEdit">编辑</button></view>
+        <view class="action-item"><button class="btn btn-danger" data-id="{{item.id}}" bindtap="onDelete">删除</button></view>
+      </view>
+    </view>
+  </view>
+
+  <view style="height:90px;"></view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

@@ -1,0 +1,41 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card">
+    <view class="h1">{{form.id ? '编辑活动' : '新增活动'}}</view>
+  </view>
+
+  <view class="card" wx:if="{{loading}}"><view class="muted">正在加载活动...</view></view>
+
+  <view class="card" wx:else>
+    <view class="label">活动标题</view>
+    <input class="input notice-input" placeholder="例如：周末公益课堂报名开启" value="{{form.title}}" data-field="title" bindinput="onInput" />
+
+    <view class="label notice-label">活动内容</view>
+    <textarea class="input notice-textarea" placeholder="填写活动时间、地点、报名方式等文字说明" value="{{form.content}}" maxlength="1200" auto-height="true" data-field="content" bindinput="onInput"></textarea>
+
+    <view class="label notice-label">活动图片</view>
+    <view class="row notice-action-row">
+      <view class="col"><button class="btn btn-ghost" loading="{{uploading}}" disabled="{{uploading}}" bindtap="onChooseImage">选择/上传图片</button></view>
+      <view class="col"><button class="btn btn-ghost" bindtap="onClearImage">清除图片</button></view>
+    </view>
+
+    <view wx:if="{{form.imageUrls && form.imageUrls.length}}" class="activity-image-grid">
+      <view wx:for="{{form.imageUrls}}" wx:key="*this" class="activity-image-item">
+        <image class="activity-image-thumb" src="{{item}}" mode="aspectFill" data-url="{{item}}" bindtap="onPreviewImage"></image>
+        <button class="activity-image-delete" bindtap="onClearImage">删除</button>
+      </view>
+    </view>
+    <view wx:else class="activity-image-empty">未上传活动图片</view>
+
+    <view class="label notice-label">更多详情链接（可选）</view>
+    <input class="input notice-input" placeholder="可填 /pages/book/book 或 https://...；会在活动区详情页内展示" value="{{form.linkUrl}}" data-field="linkUrl" bindinput="onInput" />
+
+    <view class="divider"></view>
+    <view class="row notice-action-row">
+      <view class="col"><button class="btn btn-primary" loading="{{saving}}" disabled="{{saving}}" bindtap="onSave">保存发布</button></view>
+      <view class="col" wx:if="{{form.id}}"><button class="btn btn-danger" disabled="{{saving}}" bindtap="onDelete">删除活动</button></view>
+    </view>
+  </view>
+
+  <view style="height:90px;"></view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

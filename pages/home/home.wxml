@@ -1,0 +1,93 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card font-card font-card-top">
+    <view class="font-title">字体大小</view>
+    <slider min="{{uiFontMin}}" max="{{uiFontMax}}" step="1" value="{{uiFontSizePx}}"
+      bindchanging="onFontChanging" bindchange="onFontChange"
+      activeColor="#A73A20" backgroundColor="#D7AF8F" blockSize="22" />
+  </view>
+
+  <view class="card room-module-card">
+    <view class="h1">可用场室</view>
+
+    <view wx:if="{{loading}}" class="module-state"><view class="muted">正在同步最新场室状态...</view></view>
+    <view wx:elif="{{!rooms.length}}" class="module-state"><view class="muted">{{emptyText || '当前暂无可展示场室'}}</view></view>
+
+    <block wx:else>
+      <scroll-view scroll-x class="tagbar" show-scrollbar="false">
+        <view class="tagbar-inner">
+          <view wx:for="{{rooms}}" wx:key="venueId"
+            class="chip {{activeIndex===index?'chip-active':''}}"
+            data-index="{{index}}" bindtap="onTagTap">
+            {{item.name}}
+          </view>
+        </view>
+      </scroll-view>
+
+      <view class="room-swiper-box">
+        <swiper class="room-swiper" current="{{activeIndex}}" bindchange="onSwiperChange"
+          indicator-dots="true" autoplay="false" circular="false">
+          <swiper-item wx:for="{{rooms}}" wx:for-index="roomIndex" wx:key="venueId">
+            <view class="room">
+              <view class="room-header">
+                <view class="room-title">{{item.name}}</view>
+                <view class="badge {{item.statusClass}}">{{item.statusText}}</view>
+              </view>
+
+              <view wx:if="{{item.location || item.capacity}}" class="room-meta">
+                <text wx:if="{{item.location}}">{{item.location}}</text>
+                <text wx:if="{{item.capacity}}">{{item.location ? ' · ' : ''}}容量 {{item.capacity}} 人</text>
+              </view>
+
+              <view class="room-desc">{{item.desc}}</view>
+              <view class="room-tags">
+                <view wx:for="{{item.tags}}" wx:key="*this" class="pill">{{item}}</view>
+              </view>
+
+              <view wx:if="{{item.imageUrls && item.imageUrls.length}}" class="room-images">
+                <image wx:if="{{item.imageUrls.length == 1}}" class="room-image-single" src="{{item.imageUrls[0]}}" mode="aspectFill" data-room-index="{{roomIndex}}" data-url="{{item.imageUrls[0]}}" binderror="onRoomImageError"></image>
+                <swiper wx:else class="room-image-swiper" indicator-dots="true" autoplay="false" circular="true">
+                  <swiper-item wx:for="{{item.imageUrls}}" wx:for-item="img" wx:for-index="imageIndex" wx:key="*this">
+                    <image class="room-image-slide" src="{{img}}" mode="aspectFill" data-room-index="{{roomIndex}}" data-url="{{img}}" binderror="onRoomImageError"></image>
+                  </swiper-item>
+                </swiper>
+              </view>
+
+              <view class="divider"></view>
+
+              <button class="btn {{item.enabled ? 'btn-primary' : 'btn-ghost'}}" bindtap="goBookCurrent">{{item.actionText}}</button>
+            </view>
+          </swiper-item>
+        </swiper>
+      </view>
+    </block>
+  </view>
+
+  <view class="card home-activity-card">
+    <view class="module-head">
+      <view class="h1">活动预告</view>
+    </view>
+
+    <view wx:if="{{homeActivityNoticeLoading || activityNoticeLoading}}" class="home-activity-state">正在加载活动预告...</view>
+
+    <block wx:else>
+      <scroll-view wx:if="{{homeActivityNotices && homeActivityNotices.length}}" class="home-activity-list" scroll-y="true" show-scrollbar="{{homeActivityNotices.length > 3}}" enhanced="true">
+        <view wx:for="{{homeActivityNotices}}" wx:key="id" class="home-activity-item">
+          <image wx:if="{{item.displayImageUrl}}" class="home-activity-thumb" src="{{item.displayImageUrl}}" mode="aspectFill" data-url="{{item.displayImageUrl}}" bindtap="onHomeActivityPreview"></image>
+          <view class="home-activity-body">
+            <view class="home-activity-title">{{item.title || '活动预告'}}</view>
+            <view wx:if="{{item.content}}" class="home-activity-content">{{item.content}}</view>
+            <button class="btn btn-primary home-activity-btn" data-index="{{index}}" bindtap="onHomeActivityOpenLink">立即报名</button>
+          </view>
+        </view>
+      </scroll-view>
+
+      <view wx:else class="home-activity-empty">
+        <view class="home-activity-empty-icon">⌁</view>
+        <view>暂无活动</view>
+      </view>
+    </block>
+  </view>
+
+  <view style="height:90px;"></view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />

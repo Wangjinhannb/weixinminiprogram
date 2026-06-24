@@ -1,0 +1,7 @@
+
+.venue-card{margin-bottom:12px;}
+.time-wrap{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;}
+.venue-actions{gap:8px;}
+.action-item{flex:1;min-width:0;margin-bottom:8px;}
+.override-summary-list{margin-top:8px;}
+.override-line{word-break:break-all;line-height:1.7;}

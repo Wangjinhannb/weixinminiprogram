@@ -1,0 +1,40 @@
+<view class="container" style="font-size: {{uiFontSizePx}}px;">
+  <view class="card">
+    <view class="h1">管理员权限</view>
+  </view>
+
+  <view class="card">
+    <view class="label">搜索用户</view>
+    <input class="input" placeholder="输入昵称 / 手机号" value="{{keyword}}" bindinput="onKeywordInput" confirm-type="search" bindconfirm="onSearch" />
+    <view class="row" style="margin-top:12px;">
+      <view class="col"><button class="btn btn-primary" bindtap="onSearch">查询</button></view>
+      <view class="col"><button class="btn btn-ghost" bindtap="onClear">清空</button></view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="h2">用户列表</view>
+
+    <view wx:if="{{loading}}" class="muted" style="margin-top:10px;">正在加载用户数据...</view>
+    <view wx:elif="{{loadError}}" class="muted" style="margin-top:10px;">{{loadError}}</view>
+
+    <view wx:elif="{{list.length}}">
+      <view wx:for="{{list}}" wx:key="userId" class="user-item">
+        <view class="user-top">
+          <view>
+            <view class="user-name">{{item.displayName}}</view>
+          </view>
+          <view class="role-pill {{item.isSuperAdmin ? 'role-super' : (item.canEnterAdmin ? 'role-admin' : 'role-user')}}">{{item.roleText}}</view>
+        </view>
+        <view class="sub">昵称：{{item.nickName || '未填写'}}</view>
+        <view class="sub">手机号：{{item.phoneMask || '未绑定'}}</view>
+        <view style="margin-top:10px;" wx:if="{{!item.isSuperAdmin}}"><button class="btn {{item.canEnterAdmin ? 'btn-danger' : 'btn-ghost'}}" data-user-id="{{item.userId}}" data-can-enter-admin="{{item.canEnterAdmin}}" data-is-super-admin="{{item.isSuperAdmin}}" data-name="{{item.displayName}}" bindtap="onToggleAdmin">{{item.actionText}}</button></view>
+      </view>
+    </view>
+
+    <view wx:else class="muted" style="margin-top:10px;">暂无匹配用户</view>
+  </view>
+
+  <view style="height:90px;"></view>
+</view>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />
