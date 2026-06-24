@@ -1,0 +1,3 @@
+<!--cloudfunctions/cancelBooking/_shared.wxml-->
+<text>cloudfunctions/cancelBooking/_shared.wxml</text>
+<activity-notice-modal visible="{{activityNoticeVisible}}" loading="{{activityNoticeLoading}}" notice="{{activityNotice}}" bind:close="onActivityNoticeClose" bind:openlink="onActivityNoticeOpenLink" />
